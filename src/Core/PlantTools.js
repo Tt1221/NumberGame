@@ -30,4 +30,20 @@
         return (value == "" || value == undefined || value == null) ? defaultData : JSON.parse(value);
     }
 
+    tool.Log = tool.Log || {};
+    tool.Log.isDebug = true;
+    tool.Log.debug = function(msg){
+        if(!tool.Log.isDebug)return;
+        console.log("%c  " + msg,"color: green;");
+    }
+    tool.Log.info = function(msg){
+        console.info(msg);
+    }
+    tool.Log.warn = function(msg){
+        console.warn("%c" + msg,"color: yellow;");
+    }
+    tool.Log.error = function(msg){
+        console.error(msg);
+    }
+
 }(Au.Tools));

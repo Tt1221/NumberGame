@@ -10,6 +10,7 @@ Au.Struct.Player = function(){
     this.costTime   = 0 ;//花费时间
     this.damage     = 0 ;//基础攻击力
     this.crit       = 0 ;//基础暴击率
+    this.exp        = 0 ;//玩家当前经验
     /**
      * 初始化玩家数据
      * @param {Object} data
@@ -22,6 +23,7 @@ Au.Struct.Player = function(){
         self.costTime = data.costTime;
         self.crit   = data.crit;
         self.damage = data.damage;
+        self.exp    = data.exp;
     }
     /**
      * 创造一个新的玩家
@@ -34,6 +36,7 @@ Au.Struct.Player = function(){
         self.costTime = 0;
         self.crit   = 0.3;
         self.damage = 10;
+        self.exp = 0;
         console.log(self.name + "出生了");
     }
 

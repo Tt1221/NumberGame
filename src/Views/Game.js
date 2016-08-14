@@ -1,7 +1,12 @@
 /**
  * Created by Tt. on 2016/8/11.
  */
+/**
+ * 游戏对象
+ * */
+Au.g = Au.g || {};
 Au.Game = function(){
+    var Log = Au.Tools.Log;
     /**
      * 游戏玩家
      *
@@ -12,10 +17,10 @@ Au.Game = function(){
     /**
      * 游戏怪物列表
      *
-     * @param {Array<Au.Struct.Monster>} 场景怪物列表
+     * @param {Au.Struct.MonsterCtrl} 场景怪物列表
      *
      * */
-    this.monsterArray = null;
+    this.monsterCtrl = null;
     /**
      * 游戏数据初始化
      * */
@@ -25,7 +30,8 @@ Au.Game = function(){
         self.player = new Au.Struct.Player();
         self.player.create();
         //初始化怪物列表
-        this.monsterArray = [];
+        self.monsterCtrl = new Au.Struct.MonsterCtrl();
+
     }
     /**
      * 游戏逻辑初始化
@@ -34,11 +40,22 @@ Au.Game = function(){
     this.loopId = null;
     this.initGame = function(){
         var self = this;
+        //创建键盘监听
+        this.initEvent();
         //创建主循环
         self.lastTime = new Date().getTime();
         self.loopId = setInterval(function(){
             self.mainLoop();
         },30);
+    }
+    /**
+     * 游戏操作初始化
+     * */
+    this.initEvent = function(){
+        Au.KeyEvent.init();
+    }
+    this.test = function(){
+        Log.debug("saflsakdj"+Math.random());
     }
     /**
      * 游戏主循环逻辑
@@ -49,7 +66,6 @@ Au.Game = function(){
         var self = this;
         var dt = self.mainLoopTime();
         this.monsterGenerator();
-        Au.Tools.print(self.monsterArray);
     }
     this.mainLoopTime = function(){
         var self = this;
@@ -61,6 +77,28 @@ Au.Game = function(){
     /**
      * 游戏功能
      * */
+    /**
+     * 发动攻击
+     * */
+    this.atk_1 = function(){
+        //单体普通伤害，默认攻击第一个敌人
+        var monster = this.monsterCtrl.front();
+        if(!monster){
+            Log.debug("怪物已全部死亡");
+            this.monsterCtrl.show();
+            return;
+        }
+        //计算伤害
+        var atk = Math.random() < this.player.crit ? this.player.damage*2 : this.player.damage;
+        //怪物受到伤害
+        monster.beHurt(atk);
+        //检测怪物是否死亡
+        if(monster.isDeath()){
+            this.monsterDeath(monster);
+            this.monsterCtrl.remove(monster);
+        }
+    }
+
     /**
      * 自动增加金币
      *
@@ -95,7 +133,7 @@ Au.Game = function(){
      * @return {Au.Struct.Monster} 创造的怪物
      *
      * */
-    //怪物产生CD
+    //怪物产生冷却时间
     this.monsterCreateCD = null;
     this.monsterGenerator = function(){
         var self = this;
@@ -105,9 +143,8 @@ Au.Game = function(){
         if(time - self.monsterCreateCD < Au.Config.Monster.CREATE_CD)return;
         self.monsterCreateCD = time;
         //创造怪物
-        var monster = new Au.Struct.Monster();
-        monster.create();
-        self.monsterArray.push(monster);
+        this.monsterCtrl.create();
+        this.monsterCtrl.show();
     }
     /**
      * 怪物死亡 物品回收
@@ -119,6 +156,8 @@ Au.Game = function(){
         var self = this;
         self.player.addExp(monster.exp);
         self.player.addCoin(monster.coin);
+        Log.debug(monster.name + "已死亡！"+ "玩家获取coin："+ monster.coin + "/exp："+monster.exp);
+        Log.debug("玩家当前Coin:"+self.player.coin + "/Exp:" + self.player.exp);
     }
     /**
      * 游戏执行
@@ -129,8 +168,8 @@ Au.Game = function(){
     }
 }
 Au.runGame = function(){
-    var g = new Au.Game();
-    g.run();
+    Au.g = new Au.Game();
+    Au.g.run();
 }
 
 

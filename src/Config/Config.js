@@ -8,7 +8,7 @@
     }
     //怪物
     config.Monster = {
-        CREATE_CD : 5000        //怪物创建时间间隔
+        CREATE_CD : 500        //怪物创建时间间隔
     }
 }(Au.Config));
 

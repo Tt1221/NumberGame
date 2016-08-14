@@ -6,7 +6,7 @@ Au.Struct = Au.Struct || {};
 Au.Game = Au.Game || {};
 Au.Tools = Au.Tools || {};
 Au.Config = Au.Config || {};
-
+Au.KeyEvent = Au.KeyEvent || {};
 
 
 
